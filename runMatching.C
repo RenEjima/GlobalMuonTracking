@@ -3,6 +3,31 @@
 #endif
 
 #include "MUONMatcher.h"
+#include "TROOT.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TLatex.h"
+#include "TEfficiency.h"
+#include <TMath.h>
+#include "CommonConstants/MathConstants.h"
+#include "SimulationDataFormat/MCTrack.h"
+#include "SimulationDataFormat/MCCompLabel.h"
+#include "SimulationDataFormat/MCTruthContainer.h"
+#include <TGeoGlobalMagField.h>
+#include "DataFormatsParameters/GRPObject.h"
+#include "DetectorsBase/Propagator.h"
+#include "Field/MagneticField.h"
+#include <TH1F.h>
+#include <TH2F.h>
+//#include <TH3F.h>                                                                               
+#include <TF1.h>
+#include "SimulationDataFormat/MCEventHeader.h"
+#include <TStyle.h>
+#include <TProfile.h>
+#include <TGraph.h>
+
+#include "include/GlobalMuonTrack.h"
+
 
 //#ifdef __MAKECINT__
 #pragma link C++ class GlobalMuonTrack + ;
@@ -53,6 +78,10 @@ void loadAndSetMatchingConfig() {
     if (matching_fcn.find("matchALL_") < matching_fcn.length()) {
       std::cout << " Setting " << matching_fcn << std::endl;
       matcher.setMatchingFunction(&MUONMatcher::matchMFT_MCH_TracksAllParam);
+    }
+    if (matching_fcn.find("Hiroshima_") < matching_fcn.length()){
+      std::cout << " Setting " << matching_fcn << std::endl;
+      matcher.setMatchingFunction(&MUONMatcher::Hiroshima);
     }
   }
 
@@ -120,13 +149,12 @@ int runMatching() {
 
   // gSystem->Load("libO2MCHTracking");
   // Custom matching function
-  // matcher.setCustomMatchingFunction(&MyMatchingFunc,
-  // "_aliasForMyMatchingFunction");
+  // matcher.setCustomMatchingFunction(&MyMatchingFunc, "_aliasforMyMatchingFunc");
 
   // Configure matcher according command line options
   loadAndSetMatchingConfig();
 
-  // matcher.LoadAbsorber();
+  matcher.LoadAbsorber();
 
   // Load MFT tracks and propagates to matching plane
   matcher.loadMFTTracksOut();

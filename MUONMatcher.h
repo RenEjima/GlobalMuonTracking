@@ -111,6 +111,14 @@ public:
   //// Position, Angles & Charged Momentum
   double matchMFT_MCH_TracksAllParam(const GlobalMuonTrack &mchTrack,
                                      const MFTTrack &mftTrack);
+ 
+
+  //// Hiroshima's Matching
+  double Hiroshima(const GlobalMuonTrack &mchTrack,
+		   const MFTTrack &mftTrack);
+
+
+
   void setMatchingFunction(double (MUONMatcher::*func)(const GlobalMuonTrack &,
                                                        const MFTTrack &)) {
     mMatchFunc = func;
@@ -120,6 +128,11 @@ public:
       mMatchingHelper.MatchingFunction = "_matchXYPhiTanl";
     if (func == &MUONMatcher::matchMFT_MCH_TracksAllParam)
       mMatchingHelper.MatchingFunction = "_matchAllParams";
+
+    if (func == &MUONMatcher::Hiroshima)
+      mMatchingHelper.MatchingFunction = "_Hiroshima";
+
+
     std::cout << " ** MUONMATCHER: Setting matching function => "
               << mMatchingHelper.MatchingFunction << std::endl;
   }
